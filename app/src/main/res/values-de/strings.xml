@@ -27,6 +27,11 @@
     <string name="auth_error_invalid_credentials">Ungültige E-Mail-Adresse oder Passwort.</string>
     <string name="auth_error_email_exists">Ein Konto mit dieser E-Mail existiert bereits.</string>
     <string name="auth_success_verification">Registrierung erfolgreich! Bitte überprüfen Sie Ihre E-Mails, um Ihr Konto zu bestätigen.</string>
+    <string name="auth_validation_email_required">E-Mail-Adresse ist erforderlich.</string>
+    <string name="auth_validation_email_invalid">Ungültige E-Mail-Adresse.</string>
+    <string name="auth_validation_password_required">Passwort ist erforderlich.</string>
+    <string name="auth_validation_password_too_short">Passwort muss mindestens 6 Zeichen lang sein.</string>
+    <string name="nav_back">Zurück</string>
 
     <!-- Dashboard -->
     <string name="dash_title">Meine Notizen</string>

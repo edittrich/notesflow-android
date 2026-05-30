@@ -44,6 +44,10 @@ fun SignupScreen(
     val coroutineScope = rememberCoroutineScope()
 
     // Hoist localized string resources to Composable scope to resolve LocalContextGetResourceValueCall lint errors
+    val emailRequiredStr = stringResource(R.string.auth_validation_email_required)
+    val emailInvalidStr = stringResource(R.string.auth_validation_email_invalid)
+    val passwordRequiredStr = stringResource(R.string.auth_validation_password_required)
+    val passwordTooShortStr = stringResource(R.string.auth_validation_password_too_short)
     val authSuccessVerificationStr = stringResource(R.string.auth_success_verification)
     val authErrorEmailExistsStr = stringResource(R.string.auth_error_email_exists)
 
@@ -61,20 +65,20 @@ fun SignupScreen(
         var isValid = true
 
         if (email.trim().isEmpty()) {
-            emailError = "Email is required"
+            emailError = emailRequiredStr
             isValid = false
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailError = "Invalid email address"
+            emailError = emailInvalidStr
             isValid = false
         } else {
             emailError = null
         }
 
         if (password.isEmpty()) {
-            passwordError = "Password is required"
+            passwordError = passwordRequiredStr
             isValid = false
         } else if (password.length < 6) {
-            passwordError = "Password must be at least 6 characters"
+            passwordError = passwordTooShortStr
             isValid = false
         } else {
             passwordError = null

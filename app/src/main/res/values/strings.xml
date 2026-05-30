@@ -27,6 +27,11 @@
     <string name="auth_error_invalid_credentials">Invalid email or password.</string>
     <string name="auth_error_email_exists">An account with this email already exists.</string>
     <string name="auth_success_verification">Registration successful! Please check your email to verify your account.</string>
+    <string name="auth_validation_email_required">Email is required.</string>
+    <string name="auth_validation_email_invalid">Invalid email address.</string>
+    <string name="auth_validation_password_required">Password is required.</string>
+    <string name="auth_validation_password_too_short">Password must be at least 6 characters.</string>
+    <string name="nav_back">Back</string>
 
     <!-- Dashboard -->
     <string name="dash_title">My Notes</string>
