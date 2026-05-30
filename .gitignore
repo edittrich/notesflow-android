@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Fastlane/Bundler local directories
+/vendor/bundle/
+/.bundle/
