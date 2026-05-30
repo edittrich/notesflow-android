@@ -17,8 +17,8 @@
     <string name="auth_password_placeholder">••••••••</string>
     <string name="auth_sign_in_button">Anmelden</string>
     <string name="auth_sign_up_button">Registrieren</string>
-    <string name="auth_signing_in">Anmeldung läuft...</string>
-    <string name="auth_signing_up">Registrierung läuft...</string>
+    <string name="auth_signing_in">Anmeldung läuft&#8230;</string>
+    <string name="auth_signing_up">Registrierung läuft&#8230;</string>
     <string name="auth_no_account">Noch kein Konto?</string>
     <string name="auth_have_account">Bereits ein Konto?</string>
     <string name="auth_sign_up_link">Registrieren</string>
@@ -30,11 +30,11 @@
 
     <!-- Dashboard -->
     <string name="dash_title">Meine Notizen</string>
-    <string name="dash_search_placeholder">Notizen suchen...</string>
+    <string name="dash_search_placeholder">Notizen suchen&#8230;</string>
     <string name="dash_new_note_button">Neue Notiz</string>
     <string name="dash_no_notes_title">Noch keine Notizen</string>
     <string name="dash_no_notes_desc">Erstellen Sie Ihre erste Notiz, um Ihre Gedanken zu ordnen.</string>
-    <string name="dash_loading">Notizen werden geladen...</string>
+    <string name="dash_loading">Notizen werden geladen&#8230;</string>
     <string name="dash_error_loading">Notizen konnten nicht geladen werden.</string>
     <string name="dash_try_again">Erneut versuchen</string>
 
@@ -57,13 +57,13 @@
     <string name="form_edit_title">Notiz bearbeiten</string>
     <string name="form_edit_desc">Ändern Sie die Details Ihrer Notiz.</string>
     <string name="form_field_title">Titel</string>
-    <string name="form_field_title_placeholder">Titel der Notiz eingeben...</string>
+    <string name="form_field_title_placeholder">Titel der Notiz eingeben&#8230;</string>
     <string name="form_field_description">Beschreibung</string>
-    <string name="form_field_description_placeholder">Schreiben Sie hier den Inhalt Ihrer Notiz...</string>
+    <string name="form_field_description_placeholder">Schreiben Sie hier den Inhalt Ihrer Notiz&#8230;</string>
     <string name="form_submit_create">Notiz erstellen</string>
     <string name="form_submit_edit">Änderungen speichern</string>
     <string name="form_cancel">Abbrechen</string>
-    <string name="form_saving">Speichern...</string>
+    <string name="form_saving">Speichern&#8230;</string>
     <string name="form_validation_title_required">Titel ist erforderlich.</string>
     <string name="form_validation_title_max">Titel darf maximal 120 Zeichen lang sein.</string>
     <string name="form_validation_description_required">Beschreibung ist erforderlich.</string>
@@ -74,7 +74,7 @@
     <string name="delete_desc">Sind Sie sicher, dass Sie diese Notiz löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.</string>
     <string name="delete_cancel">Abbrechen</string>
     <string name="delete_confirm">Löschen</string>
-    <string name="delete_deleting">Löschen läuft...</string>
+    <string name="delete_deleting">Löschen läuft&#8230;</string>
 
     <!-- Settings -->
     <string name="settings_title">Einstellungen</string>

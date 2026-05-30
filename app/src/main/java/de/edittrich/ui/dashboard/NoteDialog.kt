@@ -27,6 +27,13 @@ fun NoteDialog(
     isLoading: Boolean = false
 ) {
     val context = LocalContext.current
+    
+    // Hoist localized string resources to Composable scope to resolve LocalContextGetResourceValueCall lint errors
+    val titleRequiredStr = stringResource(R.string.form_validation_title_required)
+    val titleMaxStr = stringResource(R.string.form_validation_title_max)
+    val descRequiredStr = stringResource(R.string.form_validation_description_required)
+    val descMaxStr = stringResource(R.string.form_validation_description_max)
+
     var title by remember { mutableStateOf(initialTitle) }
     var description by remember { mutableStateOf(initialDescription) }
 
@@ -37,20 +44,20 @@ fun NoteDialog(
         var isValid = true
 
         if (title.trim().isEmpty()) {
-            titleError = context.getString(R.string.form_validation_title_required)
+            titleError = titleRequiredStr
             isValid = false
         } else if (title.length > 120) {
-            titleError = context.getString(R.string.form_validation_title_max)
+            titleError = titleMaxStr
             isValid = false
         } else {
             titleError = null
         }
 
         if (description.trim().isEmpty()) {
-            descriptionError = context.getString(R.string.form_validation_description_required)
+            descriptionError = descRequiredStr
             isValid = false
         } else if (description.length > 5000) {
-            descriptionError = context.getString(R.string.form_validation_description_max)
+            descriptionError = descMaxStr
             isValid = false
         } else {
             descriptionError = null

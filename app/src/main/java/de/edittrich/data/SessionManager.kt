@@ -2,6 +2,7 @@ package de.edittrich.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 class SessionManager(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -17,32 +18,30 @@ class SessionManager(context: Context) {
     }
 
     fun saveSession(accessToken: String, refreshToken: String, userId: String, email: String) {
-        prefs.edit().apply {
+        prefs.edit {
             putString(KEY_ACCESS_TOKEN, accessToken)
             putString(KEY_REFRESH_TOKEN, refreshToken)
             putString(KEY_USER_ID, userId)
             putString(KEY_USER_EMAIL, email)
-            apply()
         }
     }
 
     fun clearSession() {
-        prefs.edit().apply {
+        prefs.edit {
             remove(KEY_ACCESS_TOKEN)
             remove(KEY_REFRESH_TOKEN)
             remove(KEY_USER_ID)
             remove(KEY_USER_EMAIL)
-            apply()
         }
     }
 
     var accessToken: String?
         get() = prefs.getString(KEY_ACCESS_TOKEN, null)
-        set(value) = prefs.edit().putString(KEY_ACCESS_TOKEN, value).apply()
+        set(value) = prefs.edit { putString(KEY_ACCESS_TOKEN, value) }
 
     var refreshToken: String?
         get() = prefs.getString(KEY_REFRESH_TOKEN, null)
-        set(value) = prefs.edit().putString(KEY_REFRESH_TOKEN, value).apply()
+        set(value) = prefs.edit { putString(KEY_REFRESH_TOKEN, value) }
 
     val userId: String?
         get() = prefs.getString(KEY_USER_ID, null)
@@ -52,11 +51,11 @@ class SessionManager(context: Context) {
 
     var themePreference: String
         get() = prefs.getString(KEY_THEME, "SYSTEM") ?: "SYSTEM"
-        set(value) = prefs.edit().putString(KEY_THEME, value).apply()
+        set(value) = prefs.edit { putString(KEY_THEME, value) }
 
     var languagePreference: String
         get() = prefs.getString(KEY_LANGUAGE, "en") ?: "en"
-        set(value) = prefs.edit().putString(KEY_LANGUAGE, value).apply()
+        set(value) = prefs.edit { putString(KEY_LANGUAGE, value) }
 
     val isLoggedIn: Boolean
         get() = accessToken != null

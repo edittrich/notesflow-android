@@ -103,3 +103,12 @@ Inside `app/src/main/java/de/edittrich/`:
     *   `dashboard/`: Grid dashboard displaying notes cards, sorting dropdowns, local queries filtering, and note dialog actions.
     *   `settings/`: Language and theme configuration options.
 *   [MainActivity.kt](file:///home/edittrich/Documents/workspaces/git/notesflow-android/app/src/main/java/de/edittrich/MainActivity.kt): Navigation coordinator and dynamic language runtime context manager.
+
+---
+
+## Optimizations & Modern Best Practices
+
+*   **Composition-Scoped Resource Retrieval**: Hoisted string resource queries to `@Composable` scope to resolve `LocalContextGetResourceValueCall` warnings, ensuring correct reactive invalidation when locales change.
+*   **Bundle Language Splits Disabled**: Configured the build gradle bundle option `enableSplit = false` to support our dynamic in-app locale toggles without needing the Play Core library.
+*   **KTX Extensions Integration**: Refactored `SessionManager` transactions to use standard SharedPreferences `edit { ... }` blocks from the `androidx.core:core-ktx` library.
+*   **Typography Standards**: Cleaned up triple dots with standard HTML/XML entities (`&#8230;`) for proper typographical ellipsis.

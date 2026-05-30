@@ -43,6 +43,10 @@ fun SignupScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
+    // Hoist localized string resources to Composable scope to resolve LocalContextGetResourceValueCall lint errors
+    val authSuccessVerificationStr = stringResource(R.string.auth_success_verification)
+    val authErrorEmailExistsStr = stringResource(R.string.auth_error_email_exists)
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -94,12 +98,12 @@ fun SignupScreen(
                     onSignupSuccess(true)
                 }
                 is AuthResult.SuccessVerificationRequired -> {
-                    successMessage = context.getString(R.string.auth_success_verification)
+                    successMessage = authSuccessVerificationStr
                     onSignupSuccess(false)
                 }
                 is AuthResult.Error -> {
                     authError = when {
-                        result.message.contains("already exists", ignoreCase = true) -> context.getString(R.string.auth_error_email_exists)
+                        result.message.contains("already exists", ignoreCase = true) -> authErrorEmailExistsStr
                         else -> result.message
                     }
                 }

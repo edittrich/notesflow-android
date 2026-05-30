@@ -45,6 +45,11 @@ fun LoginScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
+    // Hoist localized string resources to Composable scope to resolve LocalContextGetResourceValueCall lint errors
+    val formValidationRequiredStr = stringResource(R.string.form_validation_title_required)
+    val authErrorInvalidCredentialsStr = stringResource(R.string.auth_error_invalid_credentials)
+    val authErrorGenericStr = stringResource(R.string.auth_error_generic)
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -58,7 +63,7 @@ fun LoginScreen(
         var isValid = true
         
         if (email.trim().isEmpty()) {
-            emailError = context.getString(R.string.form_validation_title_required) // Fallback or reuse
+            emailError = formValidationRequiredStr // Fallback or reuse
             emailError = "Email is required"
             isValid = false
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -72,7 +77,7 @@ fun LoginScreen(
             passwordError = "Password is required"
             isValid = false
         } else if (password.length < 6) {
-            passwordError = context.getString(R.string.auth_error_invalid_credentials)
+            passwordError = authErrorInvalidCredentialsStr
             passwordError = "Password must be at least 6 characters"
             isValid = false
         } else {
@@ -97,12 +102,12 @@ fun LoginScreen(
                 }
                 is AuthResult.Error -> {
                     authError = when (result.message) {
-                        "Invalid login credentials" -> context.getString(R.string.auth_error_invalid_credentials)
+                        "Invalid login credentials" -> authErrorInvalidCredentialsStr
                         else -> result.message
                     }
                 }
                 else -> {
-                    authError = context.getString(R.string.auth_error_generic)
+                    authError = authErrorGenericStr
                 }
             }
         }
