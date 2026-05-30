@@ -28,6 +28,12 @@ class ApiClient(private val context: android.content.Context) {
         .readTimeout(15, TimeUnit.SECONDS)
         .build()
 
+    private fun logDebug(message: String) {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, message)
+        }
+    }
+
     companion object {
         private const val TAG = "ApiClient"
         
@@ -40,7 +46,7 @@ class ApiClient(private val context: android.content.Context) {
 
     suspend fun login(email: String, password: String): AuthResult = withContext(Dispatchers.IO) {
         val url = "$BASE_SUPABASE_URL/auth/v1/token?grant_type=password"
-        Log.d(TAG, "Attempting login for email: $email on URL: $url")
+        logDebug("Attempting login for email: $email on URL: $url")
         
         val requestBodyJson = JsonObject().apply {
             addProperty("email", email)
@@ -57,7 +63,7 @@ class ApiClient(private val context: android.content.Context) {
         try {
             client.newCall(request).execute().use { response ->
                 val responseBody = response.body?.string()
-                Log.d(TAG, "Login response code: ${response.code}, body: $responseBody")
+                logDebug("Login response code: ${response.code}, body: $responseBody")
                 
                 if (response.isSuccessful && responseBody != null) {
                     val jsonObj = gson.fromJson(responseBody, JsonObject::class.java)
@@ -67,7 +73,7 @@ class ApiClient(private val context: android.content.Context) {
                     val userId = userObj?.get("id")?.asString ?: ""
                     val userEmail = userObj?.get("email")?.asString ?: email
                     
-                    Log.d(TAG, "Login successful. Saving session for userId: $userId")
+                    logDebug("Login successful. Saving session for userId: $userId")
                     sessionManager.saveSession(accessToken, refreshToken, userId, userEmail)
                     AuthResult.Success(accessToken, refreshToken, userId, userEmail)
                 } else {
@@ -84,24 +90,24 @@ class ApiClient(private val context: android.content.Context) {
 
     suspend fun signup(email: String, password: String): AuthResult = withContext(Dispatchers.IO) {
         val url = "$BASE_SUPABASE_URL/auth/v1/signup"
-        Log.d(TAG, "Attempting signup for email: $email on URL: $url")
+        logDebug("Attempting signup for email: $email on URL: $url")
         
         val requestBodyJson = JsonObject().apply {
             addProperty("email", email)
             addProperty("password", password)
         }
-
+ 
         val request = Request.Builder()
             .url(url)
             .post(gson.toJson(requestBodyJson).toRequestBody(JSON_MEDIA_TYPE))
             .addHeader("apikey", SUPABASE_ANON_KEY)
             .addHeader("Content-Type", "application/json")
             .build()
-
+ 
         try {
             client.newCall(request).execute().use { response ->
                 val responseBody = response.body?.string()
-                Log.d(TAG, "Signup response code: ${response.code}, body: $responseBody")
+                logDebug("Signup response code: ${response.code}, body: $responseBody")
                 
                 if (response.isSuccessful && responseBody != null) {
                     val jsonObj = gson.fromJson(responseBody, JsonObject::class.java)
@@ -114,11 +120,11 @@ class ApiClient(private val context: android.content.Context) {
                         val userId = userObj?.get("id")?.asString ?: ""
                         val userEmail = userObj?.get("email")?.asString ?: email
                         
-                        Log.d(TAG, "Signup successful with active session. Saving session for userId: $userId")
+                        logDebug("Signup successful with active session. Saving session for userId: $userId")
                         sessionManager.saveSession(accessToken, refreshToken, userId, userEmail)
                         AuthResult.Success(accessToken, refreshToken, userId, userEmail)
                     } else {
-                        Log.d(TAG, "Signup successful. Verification required.")
+                        logDebug("Signup successful. Verification required.")
                         AuthResult.SuccessVerificationRequired("Registration successful! Please check your email.")
                     }
                 } else {
@@ -153,12 +159,12 @@ class ApiClient(private val context: android.content.Context) {
         responseParser: (JsonObject) -> T
     ): T = withContext(Dispatchers.IO) {
         val token = sessionManager.accessToken
-        Log.d(TAG, "Executing GraphQL. Token present: ${token != null}")
+        logDebug("Executing GraphQL. Token present: ${token != null}")
         if (token == null) {
             Log.e(TAG, "executeGraphQL: No session token found")
             throw IOException("Unauthorized: No session token found")
         }
-
+ 
         val payload = JsonObject().apply {
             addProperty("query", query)
             if (variables != null) {
@@ -166,18 +172,18 @@ class ApiClient(private val context: android.content.Context) {
                 add("variables", varsJson)
             }
         }
-
+ 
         val request = Request.Builder()
             .url(BASE_GRAPHQL_URL)
             .post(gson.toJson(payload).toRequestBody(JSON_MEDIA_TYPE))
             .addHeader("Authorization", "Bearer $token")
             .addHeader("Content-Type", "application/json")
             .build()
-
+ 
         try {
             client.newCall(request).execute().use { response ->
                 val responseBody = response.body?.string()
-                Log.d(TAG, "GraphQL response code: ${response.code}, body: $responseBody")
+                logDebug("GraphQL response code: ${response.code}, body: $responseBody")
                 
                 if (!response.isSuccessful || responseBody == null) {
                     throw IOException("GraphQL network call failed: ${response.code}")

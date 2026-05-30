@@ -17,7 +17,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -74,6 +74,7 @@ dependencies {
   // HTTP & JSON
   implementation(libs.okhttp)
   implementation(libs.gson)
+  implementation(libs.androidx.security.crypto)
   implementation(libs.androidx.compose.material.icons.extended)
 
   // Core Android dependencies
