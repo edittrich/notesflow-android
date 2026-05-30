@@ -47,6 +47,7 @@ private val LightColorScheme = lightColorScheme(
     outline = LightOutline
 )
 
+@Suppress("DEPRECATION")
 @Composable
 fun NotesFlowTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
