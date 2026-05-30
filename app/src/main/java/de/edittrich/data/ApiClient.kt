@@ -1,7 +1,9 @@
 package de.edittrich.data
 
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import de.edittrich.BuildConfig
 import de.edittrich.data.model.Note
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -27,16 +29,19 @@ class ApiClient(private val context: android.content.Context) {
         .build()
 
     companion object {
-        // Localhost mapping for Android Emulator. Change to server IP for physical devices.
-        const val BASE_GRAPHQL_URL = "http://10.0.2.2:3000/api/graphql"
-        const val BASE_SUPABASE_URL = "http://10.0.2.2:54321"
-        const val SUPABASE_ANON_KEY = "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+        private const val TAG = "ApiClient"
+        
+        val BASE_GRAPHQL_URL = BuildConfig.BASE_GRAPHQL_URL
+        val BASE_SUPABASE_URL = BuildConfig.BASE_SUPABASE_URL
+        val SUPABASE_ANON_KEY = BuildConfig.SUPABASE_ANON_KEY
         
         private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
     }
 
     suspend fun login(email: String, password: String): AuthResult = withContext(Dispatchers.IO) {
         val url = "$BASE_SUPABASE_URL/auth/v1/token?grant_type=password"
+        Log.d(TAG, "Attempting login for email: $email on URL: $url")
+        
         val requestBodyJson = JsonObject().apply {
             addProperty("email", email)
             addProperty("password", password)
@@ -52,6 +57,8 @@ class ApiClient(private val context: android.content.Context) {
         try {
             client.newCall(request).execute().use { response ->
                 val responseBody = response.body?.string()
+                Log.d(TAG, "Login response code: ${response.code}, body: $responseBody")
+                
                 if (response.isSuccessful && responseBody != null) {
                     val jsonObj = gson.fromJson(responseBody, JsonObject::class.java)
                     val accessToken = jsonObj.get("access_token")?.asString ?: ""
@@ -60,20 +67,25 @@ class ApiClient(private val context: android.content.Context) {
                     val userId = userObj?.get("id")?.asString ?: ""
                     val userEmail = userObj?.get("email")?.asString ?: email
                     
+                    Log.d(TAG, "Login successful. Saving session for userId: $userId")
                     sessionManager.saveSession(accessToken, refreshToken, userId, userEmail)
                     AuthResult.Success(accessToken, refreshToken, userId, userEmail)
                 } else {
                     val errorMsg = parseSupabaseError(responseBody)
+                    Log.e(TAG, "Login failed: $errorMsg")
                     AuthResult.Error(errorMsg)
                 }
             }
         } catch (e: Exception) {
+            Log.e(TAG, "Login networking error", e)
             AuthResult.Error(e.message ?: "Network error occurred")
         }
     }
 
     suspend fun signup(email: String, password: String): AuthResult = withContext(Dispatchers.IO) {
         val url = "$BASE_SUPABASE_URL/auth/v1/signup"
+        Log.d(TAG, "Attempting signup for email: $email on URL: $url")
+        
         val requestBodyJson = JsonObject().apply {
             addProperty("email", email)
             addProperty("password", password)
@@ -89,10 +101,11 @@ class ApiClient(private val context: android.content.Context) {
         try {
             client.newCall(request).execute().use { response ->
                 val responseBody = response.body?.string()
+                Log.d(TAG, "Signup response code: ${response.code}, body: $responseBody")
+                
                 if (response.isSuccessful && responseBody != null) {
                     val jsonObj = gson.fromJson(responseBody, JsonObject::class.java)
                     
-                    // Supabase signup might return a session directly if auto-confirm is enabled
                     val sessionObj = jsonObj.getAsJsonObject("session")
                     if (sessionObj != null) {
                         val accessToken = sessionObj.get("access_token")?.asString ?: ""
@@ -101,17 +114,21 @@ class ApiClient(private val context: android.content.Context) {
                         val userId = userObj?.get("id")?.asString ?: ""
                         val userEmail = userObj?.get("email")?.asString ?: email
                         
+                        Log.d(TAG, "Signup successful with active session. Saving session for userId: $userId")
                         sessionManager.saveSession(accessToken, refreshToken, userId, userEmail)
                         AuthResult.Success(accessToken, refreshToken, userId, userEmail)
                     } else {
+                        Log.d(TAG, "Signup successful. Verification required.")
                         AuthResult.SuccessVerificationRequired("Registration successful! Please check your email.")
                     }
                 } else {
                     val errorMsg = parseSupabaseError(responseBody)
+                    Log.e(TAG, "Signup failed: $errorMsg")
                     AuthResult.Error(errorMsg)
                 }
             }
         } catch (e: Exception) {
+            Log.e(TAG, "Signup networking error", e)
             AuthResult.Error(e.message ?: "Network error occurred")
         }
     }
@@ -135,7 +152,12 @@ class ApiClient(private val context: android.content.Context) {
         variables: Map<String, Any?>?,
         responseParser: (JsonObject) -> T
     ): T = withContext(Dispatchers.IO) {
-        val token = sessionManager.accessToken ?: throw IOException("Unauthorized: No session token found")
+        val token = sessionManager.accessToken
+        Log.d(TAG, "Executing GraphQL. Token present: ${token != null}")
+        if (token == null) {
+            Log.e(TAG, "executeGraphQL: No session token found")
+            throw IOException("Unauthorized: No session token found")
+        }
 
         val payload = JsonObject().apply {
             addProperty("query", query)
@@ -152,26 +174,34 @@ class ApiClient(private val context: android.content.Context) {
             .addHeader("Content-Type", "application/json")
             .build()
 
-        client.newCall(request).execute().use { response ->
-            val responseBody = response.body?.string()
-            if (!response.isSuccessful || responseBody == null) {
-                throw IOException("GraphQL network call failed: ${response.code}")
-            }
+        try {
+            client.newCall(request).execute().use { response ->
+                val responseBody = response.body?.string()
+                Log.d(TAG, "GraphQL response code: ${response.code}, body: $responseBody")
+                
+                if (!response.isSuccessful || responseBody == null) {
+                    throw IOException("GraphQL network call failed: ${response.code}")
+                }
 
-            val jsonObj = gson.fromJson(responseBody, JsonObject::class.java)
-            
-            // Check for GraphQL errors
-            val errorsArr = jsonObj.getAsJsonArray("errors")
-            if (errorsArr != null && errorsArr.size() > 0) {
-                val firstError = errorsArr.get(0).asJsonObject
-                val message = firstError.get("message")?.asString ?: "GraphQL execution error"
-                throw IOException(message)
-            }
+                val jsonObj = gson.fromJson(responseBody, JsonObject::class.java)
+                
+                // Check for GraphQL errors
+                val errorsArr = jsonObj.getAsJsonArray("errors")
+                if (errorsArr != null && errorsArr.size() > 0) {
+                    val firstError = errorsArr.get(0).asJsonObject
+                    val message = firstError.get("message")?.asString ?: "GraphQL execution error"
+                    Log.e(TAG, "GraphQL error returned: $message")
+                    throw IOException(message)
+                }
 
-            val dataObj = jsonObj.getAsJsonObject("data") 
-                ?: throw IOException("Invalid response structure: data field missing")
-            
-            responseParser(dataObj)
+                val dataObj = jsonObj.getAsJsonObject("data") 
+                    ?: throw IOException("Invalid response structure: data field missing")
+                
+                responseParser(dataObj)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "GraphQL execution exception", e)
+            throw e
         }
     }
 

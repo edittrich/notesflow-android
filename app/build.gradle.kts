@@ -27,9 +27,26 @@ android {
     }
     buildFeatures {
       compose = true
+      buildConfig = true
       aidl = false
-      buildConfig = false
       shaders = false
+    }
+
+    flavorDimensions += "environment"
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            buildConfigField("String", "BASE_GRAPHQL_URL", "\"http://10.0.2.2:3000/api/graphql\"")
+            buildConfigField("String", "BASE_SUPABASE_URL", "\"http://10.0.2.2:54321\"")
+            buildConfigField("String", "SUPABASE_ANON_KEY", "\"sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH\"")
+        }
+        create("prod") {
+            dimension = "environment"
+            buildConfigField("String", "BASE_GRAPHQL_URL", "\"https://notesflow-edittrich.vercel.app/api/graphql\"")
+            buildConfigField("String", "BASE_SUPABASE_URL", "\"https://oehosgersafpqkhltebu.supabase.co\"")
+            buildConfigField("String", "SUPABASE_ANON_KEY", "\"sb_publishable_32O0uSfpgMeWERbRiPLZ1g_PTwxMRzG\"")
+        }
     }
 
     packaging {
