@@ -1,0 +1,88 @@
+<resources>
+    <string name="app_name">NotesFlow</string>
+    
+    <!-- Navbar -->
+    <string name="nav_sign_out">Abmelden</string>
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_settings">Einstellungen</string>
+
+    <!-- Auth -->
+    <string name="auth_sign_in_title">Bei NotesFlow anmelden</string>
+    <string name="auth_sign_in_desc">Geben Sie Ihre E-Mail und Ihr Passwort ein, um auf Ihre Notizen zuzugreifen.</string>
+    <string name="auth_sign_up_title">Konto erstellen</string>
+    <string name="auth_sign_up_desc">Registrieren Sie sich, um Ihre Gedanken zu ordnen.</string>
+    <string name="auth_email_label">E-Mail-Adresse</string>
+    <string name="auth_password_label">Passwort</string>
+    <string name="auth_email_placeholder">name@beispiel.de</string>
+    <string name="auth_password_placeholder">••••••••</string>
+    <string name="auth_sign_in_button">Anmelden</string>
+    <string name="auth_sign_up_button">Registrieren</string>
+    <string name="auth_signing_in">Anmeldung läuft...</string>
+    <string name="auth_signing_up">Registrierung läuft...</string>
+    <string name="auth_no_account">Noch kein Konto?</string>
+    <string name="auth_have_account">Bereits ein Konto?</string>
+    <string name="auth_sign_up_link">Registrieren</string>
+    <string name="auth_sign_in_link">Anmelden</string>
+    <string name="auth_error_generic">Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.</string>
+    <string name="auth_error_invalid_credentials">Ungültige E-Mail-Adresse oder Passwort.</string>
+    <string name="auth_error_email_exists">Ein Konto mit dieser E-Mail existiert bereits.</string>
+    <string name="auth_success_verification">Registrierung erfolgreich! Bitte überprüfen Sie Ihre E-Mails, um Ihr Konto zu bestätigen.</string>
+
+    <!-- Dashboard -->
+    <string name="dash_title">Meine Notizen</string>
+    <string name="dash_search_placeholder">Notizen suchen...</string>
+    <string name="dash_new_note_button">Neue Notiz</string>
+    <string name="dash_no_notes_title">Noch keine Notizen</string>
+    <string name="dash_no_notes_desc">Erstellen Sie Ihre erste Notiz, um Ihre Gedanken zu ordnen.</string>
+    <string name="dash_loading">Notizen werden geladen...</string>
+    <string name="dash_error_loading">Notizen konnten nicht geladen werden.</string>
+    <string name="dash_try_again">Erneut versuchen</string>
+
+    <!-- Sorting -->
+    <string name="sort_by">Sortieren nach</string>
+    <string name="sort_newest_first">Neueste zuerst</string>
+    <string name="sort_oldest_first">Älteste zuerst</string>
+    <string name="sort_title_az">Titel A-Z</string>
+    <string name="sort_title_za">Titel Z-A</string>
+
+    <!-- NoteCard -->
+    <string name="card_created">Erstellt</string>
+    <string name="card_updated">Aktualisiert</string>
+    <string name="card_edit">Bearbeiten</string>
+    <string name="card_delete">Löschen</string>
+
+    <!-- NoteForm -->
+    <string name="form_create_title">Notiz erstellen</string>
+    <string name="form_create_desc">Füllen Sie die Details aus, um eine neue Notiz zu erstellen.</string>
+    <string name="form_edit_title">Notiz bearbeiten</string>
+    <string name="form_edit_desc">Ändern Sie die Details Ihrer Notiz.</string>
+    <string name="form_field_title">Titel</string>
+    <string name="form_field_title_placeholder">Titel der Notiz eingeben...</string>
+    <string name="form_field_description">Beschreibung</string>
+    <string name="form_field_description_placeholder">Schreiben Sie hier den Inhalt Ihrer Notiz...</string>
+    <string name="form_submit_create">Notiz erstellen</string>
+    <string name="form_submit_edit">Änderungen speichern</string>
+    <string name="form_cancel">Abbrechen</string>
+    <string name="form_saving">Speichern...</string>
+    <string name="form_validation_title_required">Titel ist erforderlich.</string>
+    <string name="form_validation_title_max">Titel darf maximal 120 Zeichen lang sein.</string>
+    <string name="form_validation_description_required">Beschreibung ist erforderlich.</string>
+    <string name="form_validation_description_max">Beschreibung darf maximal 5000 Zeichen lang sein.</string>
+
+    <!-- DeleteDialog -->
+    <string name="delete_title">Notiz löschen</string>
+    <string name="delete_desc">Sind Sie sicher, dass Sie diese Notiz löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="delete_cancel">Abbrechen</string>
+    <string name="delete_confirm">Löschen</string>
+    <string name="delete_deleting">Löschen läuft...</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Einstellungen</string>
+    <string name="settings_theme_label">App-Design</string>
+    <string name="settings_theme_light">Helles Design</string>
+    <string name="settings_theme_dark">Dunkles Design</string>
+    <string name="settings_theme_system">Systemstandard</string>
+    <string name="settings_language_label">Language / Sprache</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_language_de">Deutsch</string>
+</resources>
