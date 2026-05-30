@@ -1,4 +1,4 @@
-package de.edittrich.ui.settings
+package de.edittrich.notesflow.ui.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,8 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import de.edittrich.R
-import de.edittrich.data.SessionManager
+import de.edittrich.notesflow.R
+import de.edittrich.notesflow.data.SessionManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

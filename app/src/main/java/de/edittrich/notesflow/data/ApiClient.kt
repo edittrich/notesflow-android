@@ -1,10 +1,10 @@
-package de.edittrich.data
+package de.edittrich.notesflow.data
 
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import de.edittrich.BuildConfig
-import de.edittrich.data.model.Note
+import de.edittrich.notesflow.BuildConfig
+import de.edittrich.notesflow.data.model.Note
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType

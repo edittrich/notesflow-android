@@ -5,10 +5,10 @@ plugins {
 }
 
 android {
-    namespace = "de.edittrich"
+    namespace = "de.edittrich.notesflow"
     compileSdk = 36
     defaultConfig {
-        applicationId = "de.edittrich"
+        applicationId = "de.edittrich.notesflow"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

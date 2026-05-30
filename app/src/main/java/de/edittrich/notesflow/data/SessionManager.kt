@@ -1,4 +1,4 @@
-package de.edittrich.data
+package de.edittrich.notesflow.data
 
 import android.content.Context
 import android.content.SharedPreferences

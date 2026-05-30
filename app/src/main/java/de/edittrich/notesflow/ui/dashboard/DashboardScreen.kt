@@ -1,4 +1,4 @@
-package de.edittrich.ui.dashboard
+package de.edittrich.notesflow.ui.dashboard
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -22,10 +22,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import de.edittrich.R
-import de.edittrich.data.ApiClient
-import de.edittrich.data.SessionManager
-import de.edittrich.data.model.Note
+import de.edittrich.notesflow.R
+import de.edittrich.notesflow.data.ApiClient
+import de.edittrich.notesflow.data.SessionManager
+import de.edittrich.notesflow.data.model.Note
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

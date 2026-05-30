@@ -1,4 +1,4 @@
-package de.edittrich.ui.theme
+package de.edittrich.notesflow.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,4 +1,4 @@
-package de.edittrich.ui.auth
+package de.edittrich.notesflow.ui.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -24,17 +24,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import de.edittrich.R
-import de.edittrich.data.ApiClient
-import de.edittrich.data.AuthResult
-import de.edittrich.data.SessionManager
+import de.edittrich.notesflow.R
+import de.edittrich.notesflow.data.ApiClient
+import de.edittrich.notesflow.data.AuthResult
+import de.edittrich.notesflow.data.SessionManager
+import de.edittrich.notesflow.ui.theme.GradientEnd
+import de.edittrich.notesflow.ui.theme.GradientStart
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignupScreen(
-    onSignupSuccess: (Boolean) -> Unit, // passes true if logged in immediately, false if verification required
-    onNavigateToLogin: () -> Unit,
+fun LoginScreen(
+    onLoginSuccess: () -> Unit,
+    onNavigateToSignup: () -> Unit,
     onLanguageChanged: (String) -> Unit,
     onThemeChanged: (String) -> Unit,
     apiClient: ApiClient,
@@ -44,8 +46,9 @@ fun SignupScreen(
     val coroutineScope = rememberCoroutineScope()
 
     // Hoist localized string resources to Composable scope to resolve LocalContextGetResourceValueCall lint errors
-    val authSuccessVerificationStr = stringResource(R.string.auth_success_verification)
-    val authErrorEmailExistsStr = stringResource(R.string.auth_error_email_exists)
+    val formValidationRequiredStr = stringResource(R.string.form_validation_title_required)
+    val authErrorInvalidCredentialsStr = stringResource(R.string.auth_error_invalid_credentials)
+    val authErrorGenericStr = stringResource(R.string.auth_error_generic)
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -54,13 +57,13 @@ fun SignupScreen(
     var emailError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
     var authError by remember { mutableStateOf<String?>(null) }
-    var successMessage by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
 
     fun validateInputs(): Boolean {
         var isValid = true
-
+        
         if (email.trim().isEmpty()) {
+            emailError = formValidationRequiredStr // Fallback or reuse
             emailError = "Email is required"
             isValid = false
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -74,6 +77,7 @@ fun SignupScreen(
             passwordError = "Password is required"
             isValid = false
         } else if (password.length < 6) {
+            passwordError = authErrorInvalidCredentialsStr
             passwordError = "Password must be at least 6 characters"
             isValid = false
         } else {
@@ -83,29 +87,27 @@ fun SignupScreen(
         return isValid
     }
 
-    fun handleSignup() {
+    fun handleLogin() {
         if (!validateInputs()) return
 
         isLoading = true
         authError = null
-        successMessage = null
 
         coroutineScope.launch {
-            val result = apiClient.signup(email.trim(), password)
+            val result = apiClient.login(email.trim(), password)
             isLoading = false
             when (result) {
                 is AuthResult.Success -> {
-                    onSignupSuccess(true)
-                }
-                is AuthResult.SuccessVerificationRequired -> {
-                    successMessage = authSuccessVerificationStr
-                    onSignupSuccess(false)
+                    onLoginSuccess()
                 }
                 is AuthResult.Error -> {
-                    authError = when {
-                        result.message.contains("already exists", ignoreCase = true) -> authErrorEmailExistsStr
+                    authError = when (result.message) {
+                        "Invalid login credentials" -> authErrorInvalidCredentialsStr
                         else -> result.message
                     }
+                }
+                else -> {
+                    authError = authErrorGenericStr
                 }
             }
         }
@@ -116,7 +118,7 @@ fun SignupScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Gradient background
+        // Gradient backgrounds simulated via Box
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -140,7 +142,7 @@ fun SignupScreen(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Language Selection
+            // Language Selection TextButtons
             val currentLang = sessionManager.languagePreference
             TextButton(
                 onClick = { 
@@ -155,7 +157,11 @@ fun SignupScreen(
             ) {
                 Text("EN", fontWeight = if (currentLang == "en") FontWeight.Bold else FontWeight.Normal)
             }
-            Text("|", color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f), modifier = Modifier.padding(horizontal = 4.dp))
+            Text(
+                "|", 
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f),
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
             TextButton(
                 onClick = { 
                     if (currentLang != "de") {
@@ -185,7 +191,10 @@ fun SignupScreen(
                     onThemeChanged(newTheme)
                 }
             ) {
-                Text(text = if (isDark) "☀️" else "🌙", fontSize = 18.sp)
+                Text(
+                    text = if (isDark) "☀️" else "🌙",
+                    fontSize = 18.sp
+                )
             }
         }
 
@@ -208,7 +217,7 @@ fun SignupScreen(
             )
             
             Text(
-                text = stringResource(R.string.auth_sign_up_title),
+                text = stringResource(R.string.auth_sign_in_title),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -229,26 +238,14 @@ fun SignupScreen(
                 ) {
                     if (authError != null) {
                         Card(
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.errorContainer
+                            ),
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
                                 text = authError!!,
                                 color = MaterialTheme.colorScheme.onErrorContainer,
-                                fontSize = 14.sp,
-                                modifier = Modifier.padding(12.dp)
-                            )
-                        }
-                    }
-
-                    if (successMessage != null) {
-                        Card(
-                            colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9)), // Light Green
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(
-                                text = successMessage!!,
-                                color = Color(0xFF2E7D32), // Dark Green
                                 fontSize = 14.sp,
                                 modifier = Modifier.padding(12.dp)
                             )
@@ -329,9 +326,9 @@ fun SignupScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Sign Up Button
+                    // Sign In Button with Gradient Background styling
                     Button(
-                        onClick = { handleSignup() },
+                        onClick = { handleLogin() },
                         enabled = !isLoading,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -349,30 +346,30 @@ fun SignupScreen(
                             )
                         } else {
                             Text(
-                                text = stringResource(R.string.auth_sign_up_button),
+                                text = stringResource(R.string.auth_sign_in_button),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         }
                     }
 
-                    // Navigation Link to Login
+                    // Navigation Link to Signup
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = stringResource(R.string.auth_have_account) + " ",
+                            text = stringResource(R.string.auth_no_account) + " ",
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 14.sp
                         )
                         TextButton(
-                            onClick = onNavigateToLogin,
+                            onClick = onNavigateToSignup,
                             contentPadding = PaddingValues(0.dp)
                         ) {
                             Text(
-                                text = stringResource(R.string.auth_sign_in_link),
+                                text = stringResource(R.string.auth_sign_up_link),
                                 color = MaterialTheme.colorScheme.primary,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold

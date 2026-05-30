@@ -1,4 +1,4 @@
-package de.edittrich
+package de.edittrich.notesflow
 
 import android.content.Context
 import android.content.res.Configuration
@@ -11,13 +11,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import de.edittrich.data.ApiClient
-import de.edittrich.data.SessionManager
-import de.edittrich.ui.auth.LoginScreen
-import de.edittrich.ui.auth.SignupScreen
-import de.edittrich.ui.dashboard.DashboardScreen
-import de.edittrich.ui.settings.SettingsScreen
-import de.edittrich.ui.theme.NotesFlowTheme
+import de.edittrich.notesflow.data.ApiClient
+import de.edittrich.notesflow.data.SessionManager
+import de.edittrich.notesflow.ui.auth.LoginScreen
+import de.edittrich.notesflow.ui.auth.SignupScreen
+import de.edittrich.notesflow.ui.dashboard.DashboardScreen
+import de.edittrich.notesflow.ui.settings.SettingsScreen
+import de.edittrich.notesflow.ui.theme.NotesFlowTheme
 import java.util.Locale
 
 enum class Screen {

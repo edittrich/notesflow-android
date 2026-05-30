@@ -1,4 +1,4 @@
-package de.edittrich.ui.dashboard
+package de.edittrich.notesflow.ui.dashboard
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import de.edittrich.R
+import de.edittrich.notesflow.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
