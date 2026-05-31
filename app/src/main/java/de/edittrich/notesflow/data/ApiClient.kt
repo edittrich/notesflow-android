@@ -34,6 +34,16 @@ class ApiClient(private val context: android.content.Context) {
         }
     }
 
+    private fun logError(message: String, throwable: Throwable? = null) {
+        if (BuildConfig.DEBUG) {
+            if (throwable != null) {
+                Log.e(TAG, message, throwable)
+            } else {
+                Log.e(TAG, message)
+            }
+        }
+    }
+
     companion object {
         private const val TAG = "ApiClient"
         
@@ -78,12 +88,12 @@ class ApiClient(private val context: android.content.Context) {
                     AuthResult.Success(accessToken, refreshToken, userId, userEmail)
                 } else {
                     val errorMsg = parseSupabaseError(responseBody)
-                    Log.e(TAG, "Login failed: $errorMsg")
+                    logError("Login failed: $errorMsg")
                     AuthResult.Error(errorMsg)
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Login networking error", e)
+            logError("Login networking error", e)
             AuthResult.Error(e.message ?: "Network error occurred")
         }
     }
@@ -129,12 +139,12 @@ class ApiClient(private val context: android.content.Context) {
                     }
                 } else {
                     val errorMsg = parseSupabaseError(responseBody)
-                    Log.e(TAG, "Signup failed: $errorMsg")
+                    logError("Signup failed: $errorMsg")
                     AuthResult.Error(errorMsg)
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Signup networking error", e)
+            logError("Signup networking error", e)
             AuthResult.Error(e.message ?: "Network error occurred")
         }
     }
@@ -161,7 +171,7 @@ class ApiClient(private val context: android.content.Context) {
         val token = sessionManager.accessToken
         logDebug("Executing GraphQL. Token present: ${token != null}")
         if (token == null) {
-            Log.e(TAG, "executeGraphQL: No session token found")
+            logError("executeGraphQL: No session token found")
             throw IOException("Unauthorized: No session token found")
         }
  
@@ -196,7 +206,7 @@ class ApiClient(private val context: android.content.Context) {
                 if (errorsArr != null && errorsArr.size() > 0) {
                     val firstError = errorsArr.get(0).asJsonObject
                     val message = firstError.get("message")?.asString ?: "GraphQL execution error"
-                    Log.e(TAG, "GraphQL error returned: $message")
+                    logError("GraphQL error returned: $message")
                     throw IOException(message)
                 }
 
@@ -206,7 +216,7 @@ class ApiClient(private val context: android.content.Context) {
                 responseParser(dataObj)
             }
         } catch (e: Exception) {
-            Log.e(TAG, "GraphQL execution exception", e)
+            logError("GraphQL execution exception", e)
             throw e
         }
     }
